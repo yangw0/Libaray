@@ -1,0 +1,134 @@
+﻿
+@using WAD.Models
+@using WAD.Services
+@inject ILibraryService LibraryService
+@inject NavigationManager Navigation
+@using WAD.Components
+
+
+
+@if (Show)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0, 0, 0, 0.5);" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@Title</h5>
+                    <button type="button" class="btn-close" @onclick="Close" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @if (Mode == TransactionMode.Borrow)
+                    {
+                        <div class="mb-3">
+                            <label>User</label>
+                            <select @bind="SelectedUserId" class="form-select">
+                                <option value="0">Select User</option>
+                                @foreach (var user in LibraryService.GetAllUsers())
+                                {
+                                    <option value="@user.Id">@user.Name (ID: @user.Id)</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Available Books</label>
+                            <select @bind="SelectedBookId" class="form-select">
+                                <option value="0">Select Book</option>
+                                @foreach (var book in LibraryService.GetAllBooks())
+                                {
+                                    <option value="@book.Id">@book.Title (ID: @book.Id)</option>
+                                }
+                            </select>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="mb-3">
+                            <label>User</label>
+                            <select @bind="SelectedUserId" @bind:event="onchange" class="form-select">
+                                <option value="0">Select User</option>
+                                @foreach (var user in (LibraryService.GetBorrowedBooks() != null
+                               ? LibraryService.GetBorrowedBooks().Keys.ToList()
+                               : new List<User>()))
+                                {
+                                    <option value="@user.Id">@user.Name (ID: @user.Id)</option>
+                                }
+
+                            </select>
+
+                        </div>
+                        @if (SelectedUserId > 0)
+                        {
+                            <div class="mb-3">
+                                <label>Borrowed Books</label>
+                                <select @bind="SelectedBookId" class="form-select">
+                                    <option value="0">Select Book to Return</option>
+                                    @foreach (var book in GetUserBorrowedBooks())
+                                    {
+                                        <option value="@book.Id">@book.Title (ID: @book.Id)</option>
+                                    }
+                                </select>
+                            </div>
+                        }
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" @onclick="ExecuteTransaction">@ActionText</button>
+                    <button class="btn btn-secondary" @onclick="Close">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-backdrop fade show"></div>
+}
+
+@code {
+    public enum TransactionMode { Borrow, Return }
+
+    [Parameter] public bool Show { get; set; }
+    [Parameter] public TransactionMode Mode { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public EventCallback OnSuccess { get; set; }
+
+    private int SelectedUserId { get; set; } = 0;
+    private int SelectedBookId { get; set; } = 0;
+
+    private string Title => Mode == TransactionMode.Borrow ? "Borrow Book" : "Return Book";
+    private string ActionText => Mode == TransactionMode.Borrow ? "Borrow" : "Return";
+
+    private async Task Close()
+    {
+        SelectedUserId = 0;
+        SelectedBookId = 0;
+        await OnClose.InvokeAsync();
+    }
+
+    private List<Book> GetUserBorrowedBooks()
+    {
+        var user = LibraryService.GetAllUsers().FirstOrDefault(u => u.Id == SelectedUserId);
+        return user != null && LibraryService.GetBorrowedBooks().TryGetValue(user, out var books)
+            ? books
+            : new List<Book>();
+    }
+
+    private async Task ExecuteTransaction()
+    {
+        if (SelectedUserId == 0 || SelectedBookId == 0)
+            return;
+
+        try
+        {
+            if (Mode == TransactionMode.Borrow)
+                LibraryService.BorrowBook(SelectedUserId, SelectedBookId);
+            else
+                LibraryService.ReturnBook(SelectedUserId, SelectedBookId);
+
+            await OnSuccess.InvokeAsync();
+            await Close();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Transaction error: {ex.Message}");
+        }
+    }
+}

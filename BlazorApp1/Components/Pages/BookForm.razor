@@ -1,0 +1,54 @@
+﻿@using WAD.Models
+@using Microsoft.AspNetCore.Components.Forms
+@code {
+    [Parameter] public Book Book { get; set; } = new(); // Incoming book to edit/add
+    [Parameter] public EventCallback<Book> OnSave { get; set; } // Triggered when saved
+    [Parameter] public EventCallback OnClose { get; set; } // Triggered when canceled/closed
+
+    private Book formBook = new();
+
+    protected override void OnInitialized()
+    {
+        // Make a copy so editing the form doesn't directly mutate the parent object
+        formBook = new Book
+            {
+                Id = Book.Id,
+                Title = Book.Title,
+                Author = Book.Author,
+                ISBN = Book.ISBN
+            };
+    }
+
+    private void HandleValidSubmit()
+    {
+        OnSave.InvokeAsync(formBook); // Send the filled book back to the parent
+    }
+}
+
+<EditForm Model="formBook" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label class="form-label">ID</label>
+        <InputNumber class="form-control" @bind-Value="formBook.Id" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Title</label>
+        <InputText class="form-control" @bind-Value="formBook.Title" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Author</label>
+        <InputText class="form-control" @bind-Value="formBook.Author" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">ISBN</label>
+        <InputText class="form-control" @bind-Value="formBook.ISBN" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <button type="button" class="btn btn-secondary ms-2" @onclick="() => OnClose.InvokeAsync()">Cancel</button>
+</EditForm>

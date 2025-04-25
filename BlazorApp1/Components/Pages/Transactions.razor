@@ -1,0 +1,99 @@
+﻿
+@page "/transactions"
+@using WAD.Models
+@using WAD.Services
+@using WAD.Components
+
+@inject ILibraryService LibraryService
+
+<h3>Book Transactions</h3>
+
+<div class="mb-4">
+    
+ <button @onclick="ShowBorrowModal" class="btn btn-primary me-2">Borrow Book</button>
+ <button @onclick="ShowReturnModal" class="btn btn-warning">Return Book</button>
+
+</div>
+
+<!-- Borrow Modal -->
+<BorrowReturnModal 
+    Show="@showBorrowModal"
+    Mode="BorrowReturnModal.TransactionMode.Borrow"
+    OnClose="@(() => showBorrowModal = false)"
+    OnSuccess="@RefreshData" />
+
+<!-- Return Modal -->
+<BorrowReturnModal 
+    Show="@showReturnModal"
+    Mode="BorrowReturnModal.TransactionMode.Return"
+    OnClose="@(() => showReturnModal = false)"
+    OnSuccess="@RefreshData" />
+
+<!-- Borrowed Books List -->
+@if (LibraryService.GetBorrowedBooks().Any())
+{
+    <h4 class="mt-4">Currently Borrowed Books</h4>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Book Title</th>
+                    <th>Author</th>
+                    <th>ISBN</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var entry in LibraryService.GetBorrowedBooks())
+                {
+                    @foreach (var book in entry.Value)
+                    {
+                        <tr>
+                            <td>@entry.Key.Name (ID: @entry.Key.Id)</td>
+                            <td>@book.Title</td>
+                            <td>@book.Author</td>
+                            <td>@book.ISBN</td>
+                            <td>
+                                <button @onclick="() => QuickReturn(entry.Key.Id, book.Id)" 
+                                        class="btn btn-sm btn-outline-warning">
+                                    Return
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-info mt-4">
+        No books are currently borrowed.
+    </div>
+}
+
+@code {
+    private bool showBorrowModal = false;
+    private bool showReturnModal = false;
+
+    private void ShowBorrowModal() => showBorrowModal = true;
+    private void ShowReturnModal() => showReturnModal = true;
+
+    private void RefreshData()
+    {
+        StateHasChanged();
+    }
+
+    private void QuickReturn(int userId, int bookId)
+    {
+        LibraryService.ReturnBook(userId, bookId);
+        RefreshData();
+    }
+
+    protected override void OnInitialized()
+    {
+        // Initialize if needed
+    }
+}

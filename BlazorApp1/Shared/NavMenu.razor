@@ -1,0 +1,67 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+
+
+namespace WAD.Shared
+{
+    class NavMenu
+    {
+    }
+}
+<div class="navbar-collapse d-sm-inline-flex flex-sm-row">
+    <ul class="navbar-nav flex-grow-1">
+        <!-- Home (Replaces console app header) -->
+        <li class="nav-item px-2">
+            <a class="nav-link text-dark" href="/">
+                <i class="bi bi-house-door"></i> Home
+            </a>
+        </li>
+
+        <!-- Books (Matches console option 1) -->
+        <li class="nav-item px-2">
+            <a class="nav-link text-dark" href="/books">
+                <i class="bi bi-book"></i> Books
+            </a>
+        </li>
+
+        <!-- Users (Matches console option 2) -->
+        <li class="nav-item px-2">
+            <a class="nav-link text-dark" href="/users">
+                <i class="bi bi-people"></i> Users
+            </a>
+        </li>
+
+        <!-- Transactions (Combines console options 3-5) -->
+        <li class="nav-item dropdown px-2">
+            <a class="nav-link dropdown-toggle text-dark" data-bs-toggle="dropdown" href="#">
+                <i class="bi bi-arrow-left-right"></i> Transactions
+            </a>
+            <ul class="dropdown-menu">
+                <li>
+                    <a class="dropdown-item" href="/transactions#borrow">
+                        <i class="bi bi-book-plus"></i> Borrow Book
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="/transactions#return">
+                        <i class="bi bi-book-arrow-return"></i> Return Book
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item" href="/transactions">
+                        <i class="bi bi-list-ul"></i> View All Borrowed
+                    </a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>
+
+@code {
+    // No code needed unless you want to add dynamic features
+}

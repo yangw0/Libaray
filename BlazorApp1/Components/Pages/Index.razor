@@ -1,0 +1,133 @@
+﻿
+@page "/"
+@using WAD.Models
+@using WAD.Components
+@using WAD.Services
+@inject ILibraryService LibraryService
+
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h1 class="display-4">Library Management System</h1>
+        <p class="lead">Identical functionality to your console app, now in a web interface</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <!-- Books Card -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5><i class="bi bi-book"></i> Book Management</h5>
+                </div>
+                <div class="card-body">
+                    <p>Manage your book inventory - add, edit, or remove books</p>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="/books" class="btn btn-primary w-100">
+                        Go to Books <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Card -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow">
+                <div class="card-header bg-success text-white">
+                    <h5><i class="bi bi-people"></i> User Management</h5>
+                </div>
+                <div class="card-body">
+                    <p>Manage library users - register new users or update existing ones</p>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="/users" class="btn btn-success w-100">
+                        Go to Users <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transactions Card -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h5><i class="bi bi-arrow-left-right"></i> Book Transactions</h5>
+                </div>
+                <div class="card-body">
+                    <p>Handle book borrowing and returns - track checked out books</p>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="/transactions" class="btn btn-warning w-100">
+                        Go to Transactions <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats (Matches your console's list display) -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h5><i class="bi bi-speedometer2"></i> Quick Stats</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total Books
+                            <span class="badge bg-primary rounded-pill">@LibraryService.GetAllBooks().Count</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Registered Users
+                            <span class="badge bg-success rounded-pill">@LibraryService.GetAllUsers().Count</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Books Checked Out
+                            <span class="badge bg-warning rounded-pill">
+                                @LibraryService.GetBorrowedBooks().Sum(kvp => kvp.Value.Count)
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recently Borrowed (Like your console's ListBorrowedBooks()) -->
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-secondary text-white">
+                    <h5><i class="bi bi-clock-history"></i> Recent Transactions</h5>
+                </div>
+                <div class="card-body">
+                    @if (LibraryService.GetBorrowedBooks().Any())
+                    {
+                        <div class="list-group">
+                            @foreach (var entry in LibraryService.GetBorrowedBooks().Take(3))
+                            {
+                                <div class="list-group-item">
+                                    <div class="fw-bold">@entry.Key.Name</div>
+                                    @foreach (var book in entry.Value.Take(2))
+                                    {
+                                        <div>@book.Title <small class="text-muted">(@book.ISBN)</small></div>
+                                    }
+                                    @if (entry.Value.Count > 2)
+                                    {
+                                        <small class="text-muted">+ @(entry.Value.Count - 2) more...</small>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info mb-0">No books currently borrowed</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    // No code needed for this page unless you want to add refresh logic
+}

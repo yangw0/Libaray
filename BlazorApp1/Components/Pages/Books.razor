@@ -1,0 +1,104 @@
+﻿@page "/books"
+@using WAD.Models
+@using WAD.Services
+@inject ILibraryService LibraryService
+@inject NavigationManager Navigation
+@using WAD.Components
+@using WAD
+
+<h3>Books</h3>
+
+<!-- Book Form Modal -->
+@if (showForm)
+{
+    <BookForm Book="selectedBook" OnClose="CloseForm" OnSave="SaveBook" />
+}
+
+@code {
+    private List<Book> books;
+    private Book selectedBook = new();
+    private bool showForm = false;
+
+    protected override void OnInitialized()
+    {
+        books = LibraryService.GetAllBooks().ToList(); // Ensure your service has this method
+    }
+
+    private void ShowAddForm()
+    {
+        selectedBook = new Book(); // empty new book
+        showForm = true;
+    }
+
+    private void EditBook(Book book)
+    {
+        selectedBook = new Book
+            {
+                Id = book.Id,
+                Title = book.Title,
+                Author = book.Author,
+                ISBN = book.ISBN
+            };
+        showForm = true;
+    }
+
+    private void DeleteBook(int id)
+    {
+        LibraryService.DeleteBook(id);
+        books = LibraryService.GetAllBooks().ToList();
+    }
+
+    private void SaveBook(Book book)
+    {
+        if (book.Id == 0)
+            LibraryService.AddBook(book);
+        else
+            LibraryService.UpdateBook(book);
+
+        books = LibraryService.GetAllBooks().ToList();
+        showForm = false;
+    }
+
+    private void CloseForm()
+    {
+        showForm = false;
+    }
+}
+
+<button class="btn btn-primary mb-3" @onclick="ShowAddForm">Add New Book</button>
+
+@if (books?.Any() == true)
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>ISBN</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in books)
+            {
+                <tr>
+                    <td>@book.Id</td>
+                    <td>@book.Title</td>
+                    <td>@book.Author</td>
+                    <td>@book.ISBN</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning me-2" @onclick="() => EditBook(book)">Edit</button>
+                        <button class="btn btn-sm btn-danger" @onclick="() => DeleteBook(book.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div>No books available.</div>
+}
+
+

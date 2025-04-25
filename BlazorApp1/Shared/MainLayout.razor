@@ -1,0 +1,14 @@
+﻿@* WAD/Shared/MainLayout.razor *@
+@inherits LayoutComponentBase
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />  @* Your navigation component *@
+    </div>
+
+    <div class="main">
+        <div class="content px-4">
+            @Body  @* Rendered page content *@
+        </div>
+    </div>
+</div>

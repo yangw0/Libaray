@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35919.96
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WAD", "BlazorApp1\WAD.csproj", "{54C97A54-CB64-415C-B0A8-5204A8B4AD54}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProjectWAD", "TestProjectWAD\TestProjectWAD.csproj", "{A3346E4B-6971-496E-A5DE-9B391B5265E0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{54C97A54-CB64-415C-B0A8-5204A8B4AD54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54C97A54-CB64-415C-B0A8-5204A8B4AD54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54C97A54-CB64-415C-B0A8-5204A8B4AD54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54C97A54-CB64-415C-B0A8-5204A8B4AD54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3346E4B-6971-496E-A5DE-9B391B5265E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3346E4B-6971-496E-A5DE-9B391B5265E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3346E4B-6971-496E-A5DE-9B391B5265E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3346E4B-6971-496E-A5DE-9B391B5265E0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D01B507C-D619-49CF-905A-E5F731B8FB7A}
+	EndGlobalSection
+EndGlobal
