@@ -1,4 +1,4 @@
-name: .NET 9 Build and Test
+name: .NET Build and Test
 
 on:
   push:
@@ -14,17 +14,16 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Setup .NET 9
+    - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '9.0.x'  
+        dotnet-version: '8.0.x'
 
     - name: Restore dependencies
       run: dotnet restore
 
-    - name: Build
+    - name: Build project
       run: dotnet build --no-restore --configuration Release
 
     - name: Run tests
       run: dotnet test --no-build --configuration Release --verbosity normal
-
