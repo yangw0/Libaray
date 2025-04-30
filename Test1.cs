@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using WAD.Models;
 using WAD.Services;
+dotnet sln WAD.sln add TestProjectWAD/TestProjectWAD.csproj
 
 namespace TestProjectWAD
 {
